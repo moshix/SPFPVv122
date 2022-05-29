@@ -1,0 +1,206 @@
+TRITUS SPF DIALOG MANAGER - FEB 08, 1993
+
+   This file is provided for users that are familiar with the
+   mainframe Dialog Manager and want to tinker with the Dialog
+   Manager in Tritus SPF.
+
+   The mainframe Dialog Manager is complicated.  This document does
+   not attempt to explain the concepts of the Dialog Manager,
+   but rather the parts of it that are currently implemented.
+
+   The files mentioned in this document are in the file TPANEL12.PDS.
+   Use the TPDS utility to extract the files for your inspection.
+
+   Feel free to experiment and change panels, but please, don't
+   remove the Tritus copyright message from the Primary Panel.
+
+-----------------------------------------------------------------------
+
+New with Ship 2 -
+
+DIALOG MANAGER POOL VARIABLE NAMES
+   Dialog manager pool variables that contain an underscore can be
+   used on panels as long as the underscore is not itself used as
+   an attribute byte.  Since the default characters include the
+   underscore character, use the DEFAULT keyword on the )ATTR or )BODY
+   statement to change the default characters to exclude the underscore
+   character.
+
+DIALOG MANAGER READ-ONLY VARIABLES
+   Documentation improved.
+
+DIALOG MANAGER WRITE-VALIDATION VARIABLES
+   New with this shipment.
+
+)ATTR SECTION NEW KEYWORDS
+   FIRSTPOS and MAXLEN.
+
+BUGS FIXED
+   New )ATTR attributes used to redefine the default attributes were
+   not handled correctly.
+
+-----------------------------------------------------------------------
+
+New with Ship 3 -
+
+BUGS FIXED
+   SKIP (ON) was not working.
+
+-----------------------------------------------------------------------
+
+New with Ship 4 -
+
+)BODY has a new keyword, COLOR(YES)
+The COLOR keyword in the )ATTR section now supports the mainframe
+colors PINK and TURQUOISE.
+Now attributes that contain the COLOR() keyword are ignored if the
+terminal does not support color.
+
+-----------------------------------------------------------------------
+
+Dialog manager variable pools.
+
+PROFILE POOL
+
+   File TSPFIPRF.VP in the PDS contains the initial set of profile
+   pool variables.
+   File TUPROF12.VP in the TSPF directory contains the current profile
+   pool variables when Tritus SPF is brought down except for non-default
+   key definitions which are stored in TUKEYS12.VP.
+   There is one profile pool for Tritus SPF.
+
+SHARED POOL
+
+   File TSPFISHR.VP in the PDS contains the initial set of shared
+   pool variables.
+   There is one shared pool for each side of a split screen.  This
+   pool is used to communicate from one panel to another.
+   When a screen is split, the new session inherits a copy of the
+   shared pool from the other side of the split screen.
+
+FUNCTION POOL
+
+   Each panel has its own function pool that contain variables which
+   correspond to the various visible screen fields for the panel.
+
+Names of variables -
+
+   The characters allowed in a variable name are alphabetic,
+   numeric, and the underscore character.  The DEFAULT statement must
+   be used on the panel definition if a variable name containing an
+   underscore character is defined in the panel.
+
+Memory manager variables -
+
+   All variables that start with ZMM are internally controlled by the
+   Tritus Memory Manager.  These are set in the 0.7 panel and sub-
+   panels and are stored in the TMEMGR12.BIN file since these values
+   are required early in initialization.
+
+Read only variables -
+
+   There are a number of dialog manager read-only variables, e.g.
+   ZTIME is the current time.  These are all currently in the shared
+   pool and are defined in the file TSPFISHR.VP by ordinal.
+
+Write validation variables -
+
+   There are a number of dialog manager variables that require
+   validation or immediate action when the variable is to be written.
+   These are all currently in the profile pool and are defined in
+   the file TSPFIPRF.VP by ordinal.
+
+-----------------------------------------------------------------------
+
+Files that define panels have the suffix PAN.
+
+The primary options menu is defined in the variable ZISPPRIM.
+As distributed, it is TSPFPRIM.
+
+Panel syntax supported -
+
+)ATTR DEFAULT(xxx)
+
+   The three default attributes are
+      %  TYPE( TEXT ) SKIP( OFF ) CAPS( OFF ) INTENS( HIGH )
+      +  TYPE( TEXT ) SKIP( OFF ) CAPS( OFF ) INTENS( LOW )
+      _  TYPE( INPUT ) CAPS( ON ) INTENS( HIGH )
+
+   Attributes as defined in )ATTR and the default attributes are
+   recognized.  Using the name Z with ZVARS in the INIT proc is
+   supported, see panel TSPF08.PAN and program TSPF08I.PRX for an
+   example.
+
+  attr  TYPE( INPUT OUTPUT TEXT )
+        SKIP( ON OFF )
+        CAPS( IN OFF ON OUT )
+        INTENS( HIGH LOW MEDIUM NON )
+        COLOR( DARKBLUE DARKGREEN DARKCYAN DARKRED DARKMAGENTA BROWN
+               DARKWHITE GRAY BLUE GREEN CYAN RED MAGENTA YELLOW WHITE
+               PINK TURQ TURQUOISE )
+           The names PINK and TURQUOISE (with it's alias TURQ) are
+           included for the many mainframe panel definitions that
+           contain them.  On the PC, PINK will appear as MAGENTA and
+           TURQUOISE will appear as CYAN.  The other five mainframe
+           colors are already included in the set of fifteen PC colors.
+           The COLOR keyword is ignored if the terminal does not
+           support color.  This can be overridded by the COLOR(YES)
+           keyword on the )BODY statement.  See panel 0.5 for an
+           example.
+        FIRSTPOS( DATA ATTR )
+           This is a Tritus SPF addition.  The default is FIRSTPOS(ATTR).
+           FIRSTPOS(DATA) indicates that the first position of the field
+           can be used as data, making it unnecessary for the attribute
+           byte to consume a position on the screen.  This technique can
+           be used to have fields with different attributes next to each
+           other without an intervening space.
+        MAXLEN( nnn )
+           This is a Tritus SPF addition.  It is only valid for
+           TYPE(INPUT).  When selected, the field becomes an unprotected
+           scroll field for the indicated length.  When typing at the
+           end of the field, the whole field is shifted.  All of the
+           Keyboard panels (0.3) use this keyword with a length of 300
+           to allow for 300 characters to be used for key mapping.
+
+)BODY DEFAULT(xxx) EXPAND(xx) COLOR(YES)
+
+   The three default attributes are
+      %  TYPE( TEXT ) SKIP( OFF ) CAPS( OFF ) INTENS( HIGH )
+      +  TYPE( TEXT ) SKIP( OFF ) CAPS( OFF ) INTENS( LOW )
+      _  TYPE( INPUT ) CAPS( ON ) INTENS( HIGH )
+
+   Attributes as defined in )ATTR and the default attributes are
+   recognized.  Using the name Z with ZVARS in the INIT proc is
+   supported, see panel TSPF08.PAN and program TSPF08I.PRX for an
+   example.
+
+   The COLOR(YES) keyword informs the dialog manager that there
+   are attributes defined with colors, and the color requests are
+   to be honored even if the terminal does not support color.
+
+)INIT xxxxxxxx
+)REINIT xxxxxxxx
+)PROC xxxxxxxx
+
+   xxxxxxxx.PRX is the name of the REXX program that drives the
+   panel.  Currently, the REINIT program is ignored.
+
+-----------------------------------------------------------------------
+
+REXX programs that drive the panels have a suffix of PRX.
+
+ADDRESS ISPEXEC environment commands:
+   VPUT varname
+   VGET varname
+   LPRTGET DataLine
+
+   VPUT and VGET are used to copy between REXX variables and the
+   Dialog Manager variable pools.
+
+   LPRTGET gets the contents of the next print line and puts it in
+   the variable DataLine.
+-----------------------------------------------------------------------
+
+The Tritus SPF Dialog Manager will be evolving rapidly in the next
+several months.  Any comments or suggestions are welcome.
+

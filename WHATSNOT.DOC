@@ -1,0 +1,17 @@
+COMMANDS NOT YET IMPLEMENTED IN TRITUS SPF 1.2.2
+
+General Primary Commands:
+
+Edit Primary Commands:
+    AUTOLIST      LEVEL       STATS
+    AUTONUM       NUMBER      UNNUM
+    ERRORFILE     RENUM       XMACRO
+
+Edit Line Commands:
+
+File List Primary Commands
+
+File List Line Commands
+
+Startup Parameters
+    /R

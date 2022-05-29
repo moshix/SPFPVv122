@@ -1,0 +1,42 @@
+DIRLIST
+List current directory
+DIR
+*.*
+
+
+IBMC2
+IBM C/2 C Compiler
+CL
+-C &ZEDFQNM
+
+
+MASM
+IBM Macro Assembler
+MASM
+&ZEDNAME;
+
+
+MFCOBOL
+Micro Focus COBOL Compiler
+COBOL
+&ZEDFQNM
+
+
+REALCOB
+Realia COBOL Compiler
+REALCOB
+&ZEDFQNM
+
+
+TPDS1
+List panel members in Tritus SPF Path #1 directory
+TPDS
+&ZTPATH1.TPANEL&ZV /L *.PAN | MORE
+
+
+TPDS2
+List panel members in Tritus SPF Path #2 directory
+TPDS
+&ZTPATH2.TPANEL&ZV /L *.PAN | MORE
+
+

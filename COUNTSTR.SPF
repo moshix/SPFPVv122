@@ -1,0 +1,28 @@
+/* COUNTSTR EDIT MACRO - Count number of occurrences of a search str */
+
+'isredit macro (string)'
+                               /* Check for missing string */
+if string = '' then
+   do
+      say 'Search string not specified.'
+      exit 8
+   end
+                               /* Turn off sequence numbering */
+'isredit seq off'
+                               /* Find all occurrences of the string */
+'isredit seek all 'string
+'isredit (count,lines) = seek_counts'
+count = strip(count,'l','0')
+lines = strip(lines,'l','0')
+                               /* Put the infoline message at TOD */
+msg = "The string '"string"'" "was found" count 'times on' lines 'lines'
+'isredit line_after 0 = infoline (msg)'
+                               /* Set the ALT_3 key to the SEQ cmd */
+ZALT_3 = "SEQ"
+'ISPEXEC VPUT ZALT_3'
+                               /* Setup short and long messages */
+zedsmsg = 'SEQ command -> ALT_3'
+zedlmsg = 'The SEQ command was assigned to the Alt_3 key combination'
+'ispexec setmsg msg(isrz000)'
+
+exit 0

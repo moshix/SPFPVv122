@@ -1,0 +1,302 @@
+***********************************************************************
+
+FILE:     README.DOC
+
+PRODUCT:  Tritus SPF
+
+VERSION:  1.2.2
+
+BY:       Tritus, Inc.
+
+CONTENTS: Additions, revisions, and information not in the
+          Tritus SPF User's Guide or Tritus SPF Edit and Edit Macro
+          Reference.
+
+***********************************************************************
+
+ษออออออออออออออออออออออออออป
+บ   GENERAL INFORMATION    บ
+ศออออออออออออออออออออออออออผ
+
+*  See WHATSNOT.DOC for the commands not yet implemented in
+   Tritus SPF 1.2.2.
+
+*  See TSPFDM.DOC for an overview of the parts of the Dialog Manager
+   that are currently implemented.
+
+*  Sample REXX programs
+
+   TPRNT.REX    - Sample Tritus SPF logical printer REXX program.
+                  This program is called to execute the PRINT command
+                  when the active logical printer has a REXX program
+                  name of TPRNT.
+
+   TPRINT.REX   - Sample Tritus SPF logical printer REXX program that
+                  supports all 0.2 panel fields.
+
+   COUNTSTR.SPF - Sample Tritus SPF REXX Edit Macro that counts the
+                  number of occurrences of a search string.
+
+*  Utility programs for Tritus SPF
+
+   TPANRLDC.EXE - A family-mode API program to remove PC line-draw
+                  characters from Tritus SPF panels.  For help,
+                  TPANRLDC ?.
+
+*  Programs provided for problem analysis
+
+   MEMTEST.EXE  - DOS only.
+   EMS.COM      -  ''  ''
+   XMS.COM      -  ''  ''
+   MAPMEM.COM   -  ''  ''
+   TSPFDUMP.EXE - A family-mode API program used to format a dump file.
+
+*  Tritus SPF uses the ISPF/PDF defaults for keys PF1-12.  If you
+   want to stay with the SPF/PC style mappings for PF1-12, then
+   edit TDPFKS12.TXT and change the order of the file to reflect
+   the following:
+
+            HELP
+            SPLIT
+            END
+            SWAP
+            RFIND
+            RCHANGE
+            UP
+            DOWN
+            LEFT
+            RIGHT
+            RETURN
+            CRETRIEV
+
+   The changes will be in effect the next time you start Tritus SPF.
+
+ษออออออออออออออออออออออออออออป
+บ   UNDOCUMENTED FEATURES    บ
+ศออออออออออออออออออออออออออออผ
+
+*  FLIP is an edit primary command and edit macro command that
+   reverses the excluded status of data lines and special lines.
+
+      FLIP [range]
+
+      range   Two labels that show which lines are to be flipped.
+              If omitted, the entire file is reversed.
+
+      ISREDIT FLIP [lptr-range]
+
+      lptr-range   Two line pointers that specify the range of lines
+                   to be flipped.  A line pointer can be a label or
+                   a relative line number.  If omitted, the entire
+                   file is reversed.
+
+*  An ATTR column was added to file lists.  If any file in the list
+   has the read-only or hidden or system attribute, the column will
+   appear.  You can set attributes by using the I line command on
+   panel 3.4.
+
+*  UPPERCASE FILENAMES field was added to panel 0.4 to allow
+   translation of filenames to uppercase.
+
+*  RAM 00,FF VISIBLE field was added to panel 0.4 to make RAM font
+   code points 00 and FF viewable.
+
+*  DEFAULT CPQ NAME field was added to panel 0.4 to set the default
+   cut/paste queue name.
+
+*  Find/Change Type field was moved from panel 0.4 to edit profiles
+   (panel 0.6).  From edit, issue PROFILE PANEL to go directly to
+   the current edit profile if you want to change case sensitivity
+   dynamically while in edit.  Press F3 (END) to return to edit.
+
+*  VIEW is a new general command as well as Option V on the Primary
+   Option Menu.  It is also a /V command line option.
+
+   Differences between VIEW and EDIT are as follows:
+
+      - File must exist for VIEW.
+      - If file has zero records, EDIT fills the screen with temp
+        lines whereas VIEW does not.
+      - VIEW is like BROWSE in regards to file sharing.
+      - SAVE is not a valid command in VIEW, neither as an edit primary
+        command nor as an edit macro command.
+      - END will always end without saving the file in VIEW.
+
+*  Ctrl_Break will immediately interrupt FIND, CHANGE, EXCLUDE, file
+   load including COPY/MOVE, file save including SAVE and
+   CREATE/REPLACE.  A message is issued and Tritus SPF is still
+   operational.
+
+   In addition, Ctrl_Break will interrupt an XWAIT status if you
+   issue Ctrl_Break five times (ascending tones).  Tritus SPF is
+   aborted and any file being edited is not saved.  This would only
+   be useful in the case that the code was looping.
+
+*  OIA xxxxK memory available in DOS was changed to unlocked available
+   memory from largest contiguous memory block.  OS/2 and PharLap still
+   use the largest contiguous memory block.
+
+*  TRITUS SPF VERSION, MEMORY STATE, and MAXIMUM LRECL fields were
+   added to panel 5.  The MAXIMUM LRECL is a recommended maximum
+   based on memory available.
+
+*  The RETRIEVE command has a limit of 100 items on the queue.
+
+*  The STACK command has a limit of 40.
+
+*  REXX programs have a size limit of 32000 bytes.
+
+*  Operating system commands in REXX programs and screen output.
+
+   Tritus SPF cannot know ahead of time if a DOS or OS/2 command
+   intends to write to the screen.  If your program displays no
+   output to the screen, then a REXX SAY statement is not needed.
+
+   When the first SAY statement in any REXX program is executed,
+   Tritus SPF erases the screen and displays the name of the REXX
+   program.  Any output from REXX SAY statements and DOS or OS/2
+   commands will be viewable.  When the REXX program ends,
+   Tritus SPF will display a message to press any key to continue,
+   then the normal Tritus SPF full screen display will reappear.
+
+   For example, from a REXX program issue a DIR command:
+
+                SAY
+                ADDRESS CMD dir
+
+   If a DOS REXX program calls an operating system command or program
+   and you receive an 'out of memory' message, switch from TSPF to
+   TSPFP to make available the maximum amount of conventional memory.
+
+*  COLUMNS is a valid edit primary command.  RESET SPECIAL or RESET
+   erases the COLUMNS header line in edit.
+
+*  Message lines are issued when total memory capacity is greater than
+   total page space capacity.  This can lead to diminished performance
+   due to excessive paging.  This usually means your hard disk is
+   nearly full.  Providing more free space for paging will eliminate
+   the message.
+
+*  Parameter Abbreviations
+     AFTER       AFT
+     BEFORE      BEF
+
+   Keyword/Operand Abbreviations
+     CHANGE      CHA         CHG         C
+     CHARS       CHAR
+     COBOL       COB
+     COMMAND     COM         CMD
+     DISPLAY     DIS         DISP        DISPL
+     ERROR       ERR
+     EXCLUDED    EXCLUDE     EXC         EX          X
+     LABEL       LABELS      LAB
+     PREFIX      PRE
+     SPECIAL     SPE
+     STANDARD    STD
+     SUFFIX      SUF
+
+   Scroll Amount Abbreviations
+     CSR         CUR
+     DATA        D
+     HALF        H
+     MAX         M
+     PAGE        P
+
+ษออออออออออออออออออออออออออออป
+บ   DOCUMENTATION REVISIONS  บ
+ศออออออออออออออออออออออออออออผ
+
+TRITUS SPF QUICK REFERENCE GUIDE
+
+   Page 4.    LEFT_WORD_END moves cursor to end of previous word.
+              RIGHT_WORD_END moves cursor to end of next word.
+
+   Page 9.    RETURN also returns to a panel that issued a
+              STACK command.
+
+   Page 10.   SPLIT [number]
+                    [offset]
+
+   Page 13.   CHA is a valid abbreviation for CHANGE
+
+              CUT [range] [cpqname] [APPEND]
+
+   Page 16.   PASTE [AFTER  label] [cpqname] [ERASE]
+                    [BEFORE label]
+
+   Page 18.   UNNUMB is a valid abbreviation for UNNUMBER
+
+   Page 25.   SORT operands are optional.
+
+TRITUS SPF USER'S GUIDE
+
+   Page 14.   Startup parameter "/?" or just "?" to print help
+              for startup parameters.
+
+   Page 70.   RETURN also returns to a panel that issued a
+              STACK command.
+
+   Page 76.   SPLIT [number]
+                    [offset]
+
+              number   An unsigned number that is the absolute
+                       screen row for the split line.
+
+              offset   A signed number that is added to the current
+                       split row to generate the new split row.  If
+                       the screen is not already split, it is added to
+                       the cursor row to generate the new split row.
+
+   Page 96.   If no operand is specified, the File List will be
+              sorted in the order specified by panel 0.4.
+
+   Page 98.   Deleting subdirectories is not allowed at this time.
+
+   Page 100.  You are allowed to modify attributes for a subdirectory.
+
+   Page 136.  LEFT_WORD_END moves cursor to end of previous word.
+              RIGHT_WORD_END moves cursor to end of next word.
+
+TRITUS SPF EDIT AND EDIT MACRO REFERENCE
+
+   Page 149.  CHA is a valid abbreviation for CHANGE
+
+   Page 156.  CUT [range] [cpqname] [APPEND]
+
+              cpqname  The cut/paste queue name.  If you omit the
+                       cpqname operand, the panel 0.4 default cut/paste
+                       queue name is used.
+
+   Page 180.  PASTE [AFTER  label] [cpqname] [ERASE]
+                    [BEFORE label]
+
+              cpqname  The cut/paste queue name.  If you omit the
+                       cpqname operand, the panel 0.4 default cut/paste
+                       queue name is used.  If the cut/paste queue is
+                       not found, file cpqname.CPQ is read from disk.
+
+              ERASE    Erase the cut/paste queue after the paste
+                       operation is successfully completed.
+
+   Page 199.  UNNUMB is a valid abbreviation for UNNUMBER
+
+   Page 230.  For var1, 6-digit should be 8-digit.
+              For var2, 3-digit should be 5-digit.
+
+   Page 234.  ISREDIT CUT lptr-range [cpqname] [APPEND]
+
+              cpqname  The cut/paste queue name.  If you omit the
+                       cpqname operand, the panel 0.4 default cut/paste
+                       queue name is used.
+
+   Page 307.  ISREDIT PASTE {AFTER } lptr [cpqname] [ERASE]
+                            {BEFORE}
+
+              cpqname  The cut/paste queue name.  If you omit the
+                       cpqname operand, the panel 0.4 default cut/paste
+                       queue name is used.  If the cut/paste queue is
+                       not found, file cpqname.CPQ is read from disk.
+
+              ERASE    Erase the cut/paste queue after the paste
+                       operation is successfully completed.
+
